@@ -1,0 +1,19 @@
+FROM ubuntu:latest
+
+ARG MAVEN_VERSION=3.9.6
+
+# 设置环境变量避免交互式安装
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 更新软件源并安装OpenJDK 17和Maven
+RUN apt-get update --fix-missing && \
+    apt-get install -y openjdk-17-jdk curl tar && \
+    curl -fsSL https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+    | tar -xz -C /opt && \
+    ln -s /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/local/bin/mvn && \
+    rm -rf /var/lib/apt/lists/*
+
+# 设置JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+CMD ["mvn", "-v"] 
